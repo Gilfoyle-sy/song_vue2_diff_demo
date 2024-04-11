@@ -17,7 +17,7 @@ export default function (sel, data, c) {
   // 本例子不处理其他参数情况
   if (arguments.length !== 3) throw new Error('params error')
 
-  if (typeof c === 'string' || typeof c === 'number') {
+  if (typeof c === 'string' || typeof c === 'number' || typeof c === 'undefined') {
     // 如果是文本形式,直接返回虚拟节点
     return vnode(sel, data, undefined, c, undefined)
   } else if (Array.isArray(c)) {

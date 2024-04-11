@@ -1,64 +1,83 @@
 import h from './customDiff/h'
-import createElm from './customDiff/createElm'
 import patch from './customDiff/patch'
 import _ from 'lodash'
 
-// let vnode1 = h('div', { key: 1 }, '你好1-1')
-// let vnode1_1 = h('div', { key: 1 }, [
-//   h('div', {}, 'hello'),
-//   h('div', {}, 'world')
-// ])
-// let vnode2 = h('div', {}, [
-//   h('div', {}, 'hello'),
-//   h('div', {}, 'world')
-// ])
-// let vnode3 = h('div', {}, h('div', {}, '单个子节点'))
+let container = document.getElementById('container')
+let containerOld = document.getElementById('container-old')
+let containerNew = document.getElementById('container-new')
+let btnReset = document.getElementById('btnReset')
+let btnRandom = document.getElementById('btnRandom')
+let btnDelete = document.getElementById('btnDelete')
+let btnAppend = document.getElementById('btnAppend')
+let vnode
+let arr
 
-// console.log('vnode1', vnode1)
-// console.log('vnode2', vnode2)
-// console.log('vnode3', vnode3)
+let example = [
+  { key: 'A', value: 'A' },
+  { key: 'B', value: 'B' },
+  { key: 'C', value: 'C' },
+  { key: 'D', value: 'D' },
+  { key: 'E', value: 'E' }
+]
 
-// let domNode1 = createElm(vnode1)
-// let domNode2 = createElm(vnode2)
-// let domNode3 = createElm(vnode3)
-
-// console.dir(domNode1)
-// console.dir(domNode2)
-// console.dir(domNode3)
-
-const btn = document.getElementById('btn')
-
-let arr = [
-  h('p', { key: 'A' }, 'A'),
-  h('p', { key: 'B' }, 'B'),
-  h('p', { key: 'C' }, 'C'),
-  h('p', { key: 'D' }, 'D'),
-  h('p', { key: 'E' }, 'E'),
-  h('p', { key: 'F' }, 'F'),
-  h('p', { key: 'G' }, 'G'),
-  h('p', { key: 'H' }, 'H'),
+let defauleArr = [
+  { key: 'A', value: 'A' },
+  { key: 'B', value: 'B' },
+  { key: 'C', value: 'C' },
+  { key: 'D', value: 'D' },
+  { key: 'E', value: 'E' }
 ]
 
 setTimeout(() => {
-  const container = document.getElementById('container')
-  let vnode = h('div', { key: 'father', idName: 'container' }, arr)
-  patch(container, vnode)
-}, 1000)
+  init()
+}, 800)
 
-btn.onclick = () => {
-  const a = document.getElementById('container')
-  let newVnode = h('div', { key: 'father', idName: 'container' }, getRandomArr(arr))
-  patch(a, newVnode)
+function init() {
+  vnode = patch(container, arrToVnode(example))
 }
 
-function getRandomArr(arr) {
-  let len = arr.length
-  let randomArr = []
-  let randomLen = _.random(1, len)
-  for (let i = 0; i < randomLen; i++) {
-    let randomIndex = _.random(0, len - 1)
-    randomArr.push(arr[randomIndex])
+btnReset.onclick = () => {
+  example = _.cloneDeep(defauleArr)
+  vnode = patch(vnode, arrToVnode(defauleArr))
+}
+
+btnRandom.onclick = () => {
+  example = _.shuffle(example)
+  vnode = patch(vnode, arrToVnode(example))
+}
+
+btnDelete.onclick = () => {
+  let range = example.length - 1
+  let target = Math.round(Math.random() * range)
+  let targetObj = example.splice(target, 1)
+
+  console.log(`删除元素${targetObj[0].value}`)
+
+  vnode = patch(vnode, arrToVnode(example))
+}
+
+btnAppend.onclick = () => {
+  let newItem = createNewItem(example)
+  let randomIndex = Math.round(Math.random() * example.length)
+  example.splice(randomIndex, 0, newItem)
+
+  console.log(`插入元素${newItem.value}`)
+
+  vnode = patch(vnode, arrToVnode(example))
+}
+
+function arrToVnode(arr) {
+  let map = arr.map(item => {
+    return h('p', { key: item.key }, item.value)
+  })
+  return h('div', { key: 'container', idName: 'container' }, map)
+}
+
+function createNewItem(arr) {
+  let code = String.fromCharCode(65 + Math.round(Math.random() * 25))
+  let newItem
+  if (arr.some(item => item.key === code)) {
+    return createNewItem(arr)
   }
-  return randomArr
+  return newItem = { key: code, value: code }
 }
-

@@ -19,6 +19,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -28,4 +29,25 @@ body {
     color: #213547;
     background-color: #ffffff;
   }
+}
+
+#app {
+  width: 60%;
+  height: 500px;
+}
+
+#container {
+  display: flex;
+}
+
+#container p {
+  border: 1px solid rgba(255, 255, 255, 0.87);
+  padding: 12px 32px;
+}
+
+#btn-container {
+  padding-top: 36px;
+  display: flex;
+  justify-content: space-around;
+  width: 300px;
 }
