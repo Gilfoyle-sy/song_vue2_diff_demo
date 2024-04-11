@@ -10,5 +10,9 @@ export default {
     open: true,
     https: false,
     origin: 'http://127.0.0.1:8848'
+  },
+  base: './',
+  build: {
+    outDir: 'docs'
   }
 }
